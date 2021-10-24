@@ -12,7 +12,7 @@ def chek_reference(href):
     if href.find('http://') != -1:
         return True
     return False
-    
+
             
 def get_links(html, site):
     soup = BeautifulSoup(html, features="html.parser")
@@ -69,7 +69,7 @@ def parser(session, respons, site, deep):
 def parse(site, deep):
     session = requests.Session()
     session.headers.update(user_agent)
-    respons = session.get(site)
+    respons = session.get('https://' + site)
 
     file, subsite = [], []
     if respons.ok:
@@ -81,4 +81,4 @@ def parse(site, deep):
         "subsite" : subsite
     }
 
-print (parse(HTTPS, DEEP))  
+# print (parse(HTTPS, DEEP))  

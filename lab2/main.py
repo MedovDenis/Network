@@ -3,8 +3,8 @@ from dash import html
 from dash import dcc
 from dash.dependencies import Input, Output, State
 
-from parser import parse
 from get import get
+from parse import parse
 
 app = dash.Dash(__name__)
 
@@ -12,11 +12,11 @@ app.layout = html.Div([
     html.H1("Лабораторна работа №2"),
     html.Div([
         "Сайт: ",
-        dcc.Input(id='input-site', value='initial value', type='text')
+        dcc.Input(id='input-site', value='', type='text')
     ]),
     html.Div([
         "Глубина: ",
-        dcc.Input(id='input-deep', value='initial value', type='text')
+        dcc.Input(id='input-deep', value='0', type='text')
     ]),
     html.Br(),
     html.Button(id='input-btn', n_clicks=0, children='Выполнить'),
@@ -26,11 +26,14 @@ app.layout = html.Div([
 
 def create_list(list):
     return [
-    html.P(children=['Сайт:', list['site']]),
+    html.P(children=['Сайт: ', list['site']]),
     html.P(children=['Файлы:']),
-    html.Ul(children=[html.Li(children=['Файл:', item['file']])  for item in list['file']]),
+    html.Ol(children=[html.Li(children=[
+        html.P(children=['Файл: ', item['file']]),
+        html.P(children=['Content-Type: ', item['type']]),
+        html.P(children=['Content-Length: ', item['size'], ' Байт'])])  for item in list['file']]),
     html.P(children=['Дочернии сайты:']),
-    html.Ul(children=[create_list(item) for item in list['subsite']])]
+    html.Ol(children=[html.Li(children=create_list(item)) for item in list['subsite']])]
 
 @app.callback(
     Output(component_id='my-output', component_property='children'),
@@ -38,8 +41,9 @@ def create_list(list):
     State(component_id='input-site', component_property='value'),
     State(component_id='input-deep', component_property='value'))
 def update_output_div(_, site, deep):
-    return create_list(parse(site, deep))
-
+    if site == '' or deep == '':
+        return 'Ошибка при вводе данных'
+    return [html.P(children=get(site)), html.Br(), html.Div( children=create_list(parse(site, int(deep))))]
 
 if __name__ == '__main__':
     app.run_server(debug=True)
