@@ -26,14 +26,13 @@ app.layout = html.Div([
 
 def create_list(list):
     return [
-    html.P(children=['Сайт: ', list['site']]),
-    html.P(children=['Файлы:']),
-    html.Ol(children=[html.Li(children=[
-        html.P(children=['Файл: ', item['file']]),
-        html.P(children=['Content-Type: ', item['type']]),
-        html.P(children=['Content-Length: ', item['size'], ' Байт'])])  for item in list['file']]),
-    html.P(children=['Дочернии сайты:']),
-    html.Ol(children=[html.Li(children=create_list(item)) for item in list['subsite']])]
+        html.P(children=['Сайт: ', list['site']]),
+        html.P(children=['Файлы (кол-во: ', len(list['file']) , ', общ. размер: ', sum( (int(item['size']) for item in list['file']) ) ,' Байт):']),
+        html.Ol(children=[html.Li(children=[
+            html.P(children=['Файл: ', item['file']]),
+            html.P(children=['Content-Length: ', item['size'], ' Байт'])])  for item in list['file']]),
+        html.P(children=['Дочернии сайты:']),
+        html.Ol(children=[html.Li(children=create_list(item)) for item in list['subsite']])]
 
 @app.callback(
     Output(component_id='my-output', component_property='children'),
@@ -43,7 +42,9 @@ def create_list(list):
 def update_output_div(_, site, deep):
     if site == '' or deep == '':
         return 'Ошибка при вводе данных'
-    return [html.P(children=get(site)), html.Br(), html.Div( children=create_list(parse(site, int(deep))))]
+    return [html.P(children=get(site)), 
+            html.Br(), 
+            html.Div(children=create_list(parse(site, int(deep))))]
 
 if __name__ == '__main__':
     app.run_server(debug=True)

@@ -12,7 +12,6 @@ def chek_reference(href):
     if href.find('http://') != -1:
         return True
     return False
-
             
 def get_links(html, site):
     soup = BeautifulSoup(html, features="html.parser")
