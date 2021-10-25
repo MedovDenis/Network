@@ -42,7 +42,17 @@ def create_list(list):
 def update_output_div(_, site, deep):
     if site == '' or deep == '':
         return 'Ошибка при вводе данных'
-    return [html.P(children=get(site)), 
+
+    if 'https://' in site:
+        host = site.replace('https://', '')
+    elif 'http://' in site:
+        host = site.replace('http://', '')
+    else:
+        return 'Ошибка при вводе данных'
+
+    host = host.replace('/', '')
+
+    return [html.P(children=get(host)), 
             html.Br(), 
             html.Div(children=create_list(parse(site, int(deep))))]
 

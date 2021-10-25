@@ -9,5 +9,3 @@
 #         print('Время работы: {}'.format(dt))
 #         return res
 #     return wapper
-
-

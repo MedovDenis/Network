@@ -12,7 +12,6 @@ Host: {}
 
 '''.format(url)
 
-
     client_socket.send(request.encode())
     mod_request = client_socket.recv(1024).decode()
     client_socket.close()
