@@ -9,3 +9,11 @@
 #         print('Время работы: {}'.format(dt))
 #         return res
 #     return wapper
+
+
+m = [1, 2, 3, 4]
+
+g = []
+
+
+print(g)

@@ -24,15 +24,20 @@ app.layout = html.Div([
     html.Div(id='my-output'),
 ])
 
-def create_list(list):
+def create_list_site(site, subsite):
     return [
-        html.P(children=['Сайт: ', list['site']]),
-        html.P(children=['Файлы (кол-во: ', len(list['file']) , ', общ. размер: ', sum( (int(item['size']) for item in list['file']) ) ,' Байт):']),
-        html.Ol(children=[html.Li(children=[
-            html.P(children=['Файл: ', item['file']]),
-            html.P(children=['Content-Length: ', item['size'], ' Байт'])])  for item in list['file']]),
-        html.P(children=['Дочернии сайты:']),
-        html.Ol(children=[html.Li(children=create_list(item)) for item in list['subsite']])]
+        html.P(children=['Сайт: ', site]),
+        html.Ol(children=[
+            html.Li(children=[
+                html.P(children=['Сайт: ', item])]) for item in subsite])]
+
+def create_list_file(file):
+    return [
+        html.P(children=['Файлы (кол-во: ', len(file) , ', общ. размер: ', sum( (int(item['size']) for item in file) ) ,' Байт):']),
+        html.Ol(children=[
+            html.Li(children=[
+                html.P(children=['Файл: ', item['file']]),
+                html.P(children=['Content-Length: ', item['size'], ' Байт'])]) for item in file])]
 
 @app.callback(
     Output(component_id='my-output', component_property='children'),
@@ -40,21 +45,19 @@ def create_list(list):
     State(component_id='input-site', component_property='value'),
     State(component_id='input-deep', component_property='value'))
 def update_output_div(_, site, deep):
-    if site == '' or deep == '':
-        return 'Ошибка при вводе данных'
+    if site != '':
+        result = parse(site, int(deep))
 
-    if 'https://' in site:
-        host = site.replace('https://', '')
-    elif 'http://' in site:
-        host = site.replace('http://', '')
-    else:
-        return 'Ошибка при вводе данных'
+        subsite = result['subsite']
+        file = result['file']
 
-    host = host.replace('/', '')
-
-    return [html.P(children=get(host)), 
+        return [
+            html.Div(children=create_list_site(result['site'], subsite)), 
             html.Br(), 
-            html.Div(children=create_list(parse(site, int(deep))))]
+            html.Div(children=create_list_file(file)) ]
+    else:
+        return ['Введите значение']
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
