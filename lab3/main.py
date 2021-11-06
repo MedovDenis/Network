@@ -1,4 +1,5 @@
 import ftplib
+import os
 
 HOST = "91.222.128.11"
 LOGIN = "testftp_guest"
@@ -7,20 +8,38 @@ PASSWR = "12345"
 ftp = ftplib.FTP(HOST)
 ftp.login(user=LOGIN, passwd=PASSWR)
 
-def print_ftp_file(path):
+list_path = []
+list_file = []
+
+def parse_ftp_file(path):
     ftp.cwd(path)
+    list_path.append(path)
     list = ftp.nlst()
     for item in list:
         try:
             pwd = ftp.pwd()
-            path = pwd + item
+            path = (pwd + "/" + item).replace("//", "/")
             ftp.cwd(path)
-            print_ftp_file(path)
+            parse_ftp_file(path)
             ftp.cwd(pwd)
-        except ftplib.error_perm:    
-            print(item)
+        except ftplib.error_perm:
+            _, file_extension = os.path.splitext(item)
+            list_file.append({"file" : item, "size" : ftp.size(item), "extension" : file_extension if file_extension != '' else "."}) 
 
-print_ftp_file(ftp.pwd())
+parse_ftp_file(ftp.pwd())
+
+size_all_file = sum((item["size"] for item in list_file))
+
+# print(list_path)
+print(list_file)
+print(size_all_file)
+
+group_file = {}
+
+for item in list_file:
+    group_file[item["extension"]].append(item)
+
+print(group_file)
 
 
 ftp.close()
