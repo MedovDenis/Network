@@ -30,16 +30,13 @@ parse_ftp_file(ftp.pwd())
 
 size_all_file = sum((item["size"] for item in list_file))
 
-# print(list_path)
-print(list_file)
-print(size_all_file)
-
 group_file = {}
-
 for item in list_file:
-    group_file[item["extension"]].append(item)
+    if item["extension"] in group_file.keys():
+        group_file[item["extension"]].append(item)
+    else:
+        group_file.setdefault(item["extension"], [item])
 
 print(group_file)
-
 
 ftp.close()
