@@ -75,18 +75,3 @@ def parser(session, respons, site, deep):
             pass
     
     return file, subsite
-
-def parse(site, deep):
-    session = requests.Session()
-    session.headers.update(user_agent)
-    respons = session.get(site)
-
-    file, subsite = [], []
-    if respons.ok:
-        file , subsite = parser(session, respons, site, deep)
-    
-    return {
-        "site" : site,
-        "file" : file,
-        "subsite" : subsite
-    }
