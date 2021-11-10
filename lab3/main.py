@@ -13,7 +13,7 @@ def btnclick():
     session = ftp(host)
     session.connect(login, passwd)
 
-    lbResult["text"] =  "Размер всех файлов: {}".format(session.size_all_file())
+    lbResult["text"] =  "Size all file: {}b".format(session.size_all_file())
 
     lbxFile.delete(0, END)
     lbxPath.delete(0, END)
@@ -40,14 +40,14 @@ tbPasswd = Entry(form)
 
 lbResult = Label(form)
 
-lbPath = Label(form, text="Директории")
-lbFile = Label(form, text="Файлы")
+lbPath = Label(form, text="Path")
+lbFile = Label(form, text="File")
 
 lbxPath = Listbox(form, width=20, height=30)
 lbxFile = Listbox(form, width=45, height=30)
 
-btnRun = Button(form, text="Выполнить", command=btnclick)
-btnQuit = Button(form, text="Выйти", command=form.destroy)  
+btnRun = Button(form, text="Start", command=btnclick)
+btnQuit = Button(form, text="Exit", command=form.destroy)  
 
 lbHost.grid(column=0, row=0)
 lbLogin.grid(column=0, row=1)  
